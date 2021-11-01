@@ -1,0 +1,26 @@
+<launch>
+	<node pkg="video_stream_opencv" type="video_stream" name="camera">
+		<!-- <param name="video_stream_provider" value="http://192.168.1.22:4747/video"/> -->
+		<param name="video_stream_provider" value="/dev/video1"/>
+		<param name="fps" value="20.0" />
+		<param name="buffer_queue_size" value="1" />
+		<remap from="/image_raw" to="/camera_image" />
+        <!-- flip the image horizontally (mirror it) -->
+        <param name="flip_horizontal" value="true" />
+        <!-- flip the image vertically -->
+        <param name="flip_vertical" value="false" />
+	</node>
+
+	<node pkg="aruco_ros" type="marker_publisher" name="aruco">
+		<remap from="/camera_info" to="/camera_info" />
+		<remap from="/image" to="/camera_image" />
+		<param name="marker_size" value="0.2"/>
+		<param name="camera_frame" value="camera"/>
+		<param name="image_is_rectified" value="True"/>
+		<!--<param name="reference_frame" value=""/> <!- frame in which the marker pose will be refered -->
+	</node>
+	<!--<node pkg="plataforma" type="intento.py" name="tf_broadcaster" required="true"/>-->
+	<node pkg="rviz" type="rviz" name="viz" args=" -d $(find plataforma)/intento.rviz"/>
+<include file="$(find turtlebot_bringup)/launch/minimal.launch" />
+
+</launch>
